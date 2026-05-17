@@ -169,12 +169,12 @@ function AddCarDialog({ onAdded }: { onAdded: () => void }) {
         <DialogHeader><DialogTitle>إضافة سيارة جديدة</DialogTitle></DialogHeader>
         <form onSubmit={submit} className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
-            <div><Label>الماركة *</Label><Input value={make} onChange={(e) => setMake(e.target.value)} required /></div>
-            <div><Label>الموديل *</Label><Input value={model} onChange={(e) => setModel(e.target.value)} required /></div>
-            <div><Label>السنة</Label><Input type="number" value={year} onChange={(e) => setYear(e.target.value)} /></div>
-            <div><Label>اللون</Label><Input value={color} onChange={(e) => setColor(e.target.value)} /></div>
+            <div><Label>الماركة *</Label><Input value={make} onChange={(e) => setMake(e.target.value)} required maxLength={50} /></div>
+            <div><Label>الموديل *</Label><Input value={model} onChange={(e) => setModel(e.target.value)} required maxLength={50} /></div>
+            <div><Label>السنة</Label><Input type="number" min={1900} max={2035} value={year} onChange={(e) => setYear(e.target.value)} /></div>
+            <div><Label>اللون</Label><Input value={color} onChange={(e) => setColor(e.target.value)} maxLength={30} /></div>
           </div>
-          <div><Label>رقم اللوحة</Label><Input value={plate} onChange={(e) => setPlate(e.target.value)} dir="ltr" /></div>
+          <div><Label>رقم اللوحة</Label><Input value={plate} onChange={(e) => setPlate(e.target.value)} dir="ltr" maxLength={20} /></div>
           <Button type="submit" variant="hero" className="w-full" disabled={busy}>
             {busy ? "جاري الحفظ..." : "حفظ"}
           </Button>
