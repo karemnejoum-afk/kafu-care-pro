@@ -137,12 +137,21 @@ function AddCarDialog({ onAdded }: { onAdded: () => void }) {
   const [busy, setBusy] = useState(false);
 
   async function submit(e: React.FormEvent) {
-    e.preventDefault(); setBusy(true);
+    e.preventDefault();
+    if (make.trim().length === 0 || make.length > 50) { toast.error("الماركة مطلوبة (حتى 50 حرف)"); return; }
+    if (model.trim().length === 0 || model.length > 50) { toast.error("الموديل مطلوب (حتى 50 حرف)"); return; }
+    const yearNum = year ? Number(year) : null;
+    if (yearNum !== null && (!Number.isInteger(yearNum) || yearNum < 1900 || yearNum > 2035)) {
+      toast.error("سنة غير صالحة (1900-2035)"); return;
+    }
+    if (color && color.length > 30) { toast.error("اللون طويل جداً"); return; }
+    if (plate && plate.length > 20) { toast.error("رقم اللوحة طويل جداً"); return; }
+    setBusy(true);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setBusy(false); return; }
     const { error } = await supabase.from("cars").insert({
-      owner_id: user.id, make, model,
-      year: year ? Number(year) : null, color: color || null, plate_number: plate || null,
+      owner_id: user.id, make: make.trim(), model: model.trim(),
+      year: yearNum, color: color || null, plate_number: plate || null,
     });
     setBusy(false);
     if (error) { toast.error(error.message); return; }
