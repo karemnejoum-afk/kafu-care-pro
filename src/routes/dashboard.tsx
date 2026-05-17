@@ -137,12 +137,21 @@ function AddCarDialog({ onAdded }: { onAdded: () => void }) {
   const [busy, setBusy] = useState(false);
 
   async function submit(e: React.FormEvent) {
-    e.preventDefault(); setBusy(true);
+    e.preventDefault();
+    if (make.trim().length === 0 || make.length > 50) { toast.error("الماركة مطلوبة (حتى 50 حرف)"); return; }
+    if (model.trim().length === 0 || model.length > 50) { toast.error("الموديل مطلوب (حتى 50 حرف)"); return; }
+    const yearNum = year ? Number(year) : null;
+    if (yearNum !== null && (!Number.isInteger(yearNum) || yearNum < 1900 || yearNum > 2035)) {
+      toast.error("سنة غير صالحة (1900-2035)"); return;
+    }
+    if (color && color.length > 30) { toast.error("اللون طويل جداً"); return; }
+    if (plate && plate.length > 20) { toast.error("رقم اللوحة طويل جداً"); return; }
+    setBusy(true);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setBusy(false); return; }
     const { error } = await supabase.from("cars").insert({
-      owner_id: user.id, make, model,
-      year: year ? Number(year) : null, color: color || null, plate_number: plate || null,
+      owner_id: user.id, make: make.trim(), model: model.trim(),
+      year: yearNum, color: color || null, plate_number: plate || null,
     });
     setBusy(false);
     if (error) { toast.error(error.message); return; }
@@ -160,12 +169,12 @@ function AddCarDialog({ onAdded }: { onAdded: () => void }) {
         <DialogHeader><DialogTitle>إضافة سيارة جديدة</DialogTitle></DialogHeader>
         <form onSubmit={submit} className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
-            <div><Label>الماركة *</Label><Input value={make} onChange={(e) => setMake(e.target.value)} required /></div>
-            <div><Label>الموديل *</Label><Input value={model} onChange={(e) => setModel(e.target.value)} required /></div>
-            <div><Label>السنة</Label><Input type="number" value={year} onChange={(e) => setYear(e.target.value)} /></div>
-            <div><Label>اللون</Label><Input value={color} onChange={(e) => setColor(e.target.value)} /></div>
+            <div><Label>الماركة *</Label><Input value={make} onChange={(e) => setMake(e.target.value)} required maxLength={50} /></div>
+            <div><Label>الموديل *</Label><Input value={model} onChange={(e) => setModel(e.target.value)} required maxLength={50} /></div>
+            <div><Label>السنة</Label><Input type="number" min={1900} max={2035} value={year} onChange={(e) => setYear(e.target.value)} /></div>
+            <div><Label>اللون</Label><Input value={color} onChange={(e) => setColor(e.target.value)} maxLength={30} /></div>
           </div>
-          <div><Label>رقم اللوحة</Label><Input value={plate} onChange={(e) => setPlate(e.target.value)} dir="ltr" /></div>
+          <div><Label>رقم اللوحة</Label><Input value={plate} onChange={(e) => setPlate(e.target.value)} dir="ltr" maxLength={20} /></div>
           <Button type="submit" variant="hero" className="w-full" disabled={busy}>
             {busy ? "جاري الحفظ..." : "حفظ"}
           </Button>
@@ -183,12 +192,15 @@ function NewBookingDialog({ cars, onAdded }: { cars: Car[]; onAdded: () => void 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!carId) { toast.error("اختر سيارة"); return; }
+    if (notes.length > 1000) { toast.error("الملاحظات طويلة جداً (حتى 1000 حرف)"); return; }
+    const scheduled = new Date(when);
+    if (isNaN(scheduled.getTime())) { toast.error("موعد غير صالح"); return; }
     setBusy(true);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setBusy(false); return; }
     const { error } = await supabase.from("bookings").insert({
       customer_id: user.id, car_id: carId, service_type: service as never,
-      scheduled_at: new Date(when).toISOString(), notes: notes || null,
+      scheduled_at: scheduled.toISOString(), notes: notes || null,
     });
     setBusy(false);
     if (error) { toast.error(error.message); return; }
@@ -231,7 +243,7 @@ function NewBookingDialog({ cars, onAdded }: { cars: Car[]; onAdded: () => void 
           </div>
           <div>
             <Label>ملاحظات</Label>
-            <Input value={notes} onChange={(e) => setNotes(e.target.value)} />
+            <Input value={notes} onChange={(e) => setNotes(e.target.value)} maxLength={1000} />
           </div>
           <Button type="submit" variant="hero" className="w-full" disabled={busy}>
             {busy ? "جاري الحجز..." : "تأكيد الحجز"}
