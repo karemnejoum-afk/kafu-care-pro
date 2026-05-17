@@ -192,12 +192,15 @@ function NewBookingDialog({ cars, onAdded }: { cars: Car[]; onAdded: () => void 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!carId) { toast.error("اختر سيارة"); return; }
+    if (notes.length > 1000) { toast.error("الملاحظات طويلة جداً (حتى 1000 حرف)"); return; }
+    const scheduled = new Date(when);
+    if (isNaN(scheduled.getTime())) { toast.error("موعد غير صالح"); return; }
     setBusy(true);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setBusy(false); return; }
     const { error } = await supabase.from("bookings").insert({
       customer_id: user.id, car_id: carId, service_type: service as never,
-      scheduled_at: new Date(when).toISOString(), notes: notes || null,
+      scheduled_at: scheduled.toISOString(), notes: notes || null,
     });
     setBusy(false);
     if (error) { toast.error(error.message); return; }
