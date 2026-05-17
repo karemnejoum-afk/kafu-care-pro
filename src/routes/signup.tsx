@@ -44,19 +44,19 @@ function SignupPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label htmlFor="name">الاسم الكامل</Label>
-            <Input id="name" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+            <Input id="name" value={fullName} onChange={(e) => setFullName(e.target.value)} required maxLength={100} />
           </div>
           <div>
             <Label htmlFor="phone">رقم الجوال (مع رمز الدولة، مثال: 9665XXXXXXXX)</Label>
-            <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} required dir="ltr" placeholder="9665XXXXXXXX" />
+            <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} required dir="ltr" placeholder="9665XXXXXXXX" maxLength={20} pattern="\+?[0-9]{7,20}" />
           </div>
           <div>
             <Label htmlFor="email">البريد الإلكتروني</Label>
-            <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required dir="ltr" />
+            <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required dir="ltr" maxLength={255} />
           </div>
           <div>
             <Label htmlFor="password">كلمة المرور</Label>
-            <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required dir="ltr" />
+            <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required dir="ltr" minLength={6} maxLength={128} />
           </div>
           <Button type="submit" variant="hero" className="w-full" disabled={loading}>
             {loading ? "جاري التسجيل..." : "إنشاء الحساب"}
