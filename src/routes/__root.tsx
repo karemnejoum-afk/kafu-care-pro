@@ -39,7 +39,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold">حدث خطأ ما</h1>
-        <p className="mt-2 text-sm text-muted-foreground">حدث خطأ غير متوقع. يرجى المحاولة لاحقاً.</p>
+        <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <Button onClick={() => { router.invalidate(); reset(); }}>إعادة المحاولة</Button>
           <Button variant="outline" asChild><a href="/">الرئيسية</a></Button>
@@ -56,6 +56,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "كفو — مركز خدمات السيارات" },
       { name: "description", content: "احجز غسيل وتلميع سيارتك في مركز كفو. تتبع الحالة لحظياً." },
+      { property: "og:title", content: "كفو — مركز خدمات السيارات" },
+      { name: "twitter:title", content: "كفو — مركز خدمات السيارات" },
+      { property: "og:description", content: "احجز غسيل وتلميع سيارتك في مركز كفو. تتبع الحالة لحظياً." },
+      { name: "twitter:description", content: "احجز غسيل وتلميع سيارتك في مركز كفو. تتبع الحالة لحظياً." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b0699eab-3ea8-4f70-ba49-e22d8a6fe5d0/id-preview-7b613518--6d5a6930-a579-4d04-9088-d491bbeecde2.lovable.app-1779016065646.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b0699eab-3ea8-4f70-ba49-e22d8a6fe5d0/id-preview-7b613518--6d5a6930-a579-4d04-9088-d491bbeecde2.lovable.app-1779016065646.png" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:type", content: "website" },
     ],
     links: [{ rel: "stylesheet", href: appCss }],
   }),
