@@ -25,12 +25,14 @@ function DashboardPage() {
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const [{ data: cs }, { data: bs }] = await Promise.all([
-        supabase.from("cars").select("*").order("created_at", { ascending: false }),
-        supabase.from("bookings").select("*, cars(*)").order("scheduled_at", { ascending: false }),
+      const [carsRes, bookingsRes] = await Promise.all([
+        supabase.from("cars").select("*").eq("owner_id", user.id).order("created_at", { ascending: false }),
+        supabase.from("bookings").select("*, cars(*)").eq("customer_id", user.id).order("scheduled_at", { ascending: false }),
       ]);
-      setCars(cs ?? []);
-      setBookings((bs ?? []) as Booking[]);
+      if (carsRes.error) { console.error("cars load error", carsRes.error); toast.error("تعذّر تحميل السيارات: " + carsRes.error.message); }
+      if (bookingsRes.error) { console.error("bookings load error", bookingsRes.error); toast.error("تعذّر تحميل الحجوزات: " + bookingsRes.error.message); }
+      setCars(carsRes.data ?? []);
+      setBookings((bookingsRes.data ?? []) as Booking[]);
     })();
   }, [user, refresh]);
 
