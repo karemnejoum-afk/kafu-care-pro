@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,8 +7,18 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MessageCircle } from "lucide-react";
 import { SERVICE_LABELS, STATUS_LABELS, STATUS_COLORS, STATUS_OPTIONS, whatsappLink, buildStatusMessage } from "@/lib/kafu";
+import { verifyStaffAccess } from "@/lib/staff-guard.functions";
 
-export const Route = createFileRoute("/staff")({ component: StaffPage });
+export const Route = createFileRoute("/staff")({
+  beforeLoad: async () => {
+    try {
+      await verifyStaffAccess();
+    } catch {
+      throw redirect({ to: "/login" });
+    }
+  },
+  component: StaffPage,
+});
 
 interface Row {
   id: string; service_type: string; scheduled_at: string; status: string;
