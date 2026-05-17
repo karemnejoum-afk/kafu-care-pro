@@ -18,6 +18,8 @@ function SignupPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (fullName.trim().length === 0 || fullName.length > 100) { toast.error("الاسم مطلوب (حتى 100 حرف)"); return; }
+    if (!/^\+?[0-9]{7,20}$/.test(phone)) { toast.error("رقم جوال غير صالح"); return; }
     if (password.length < 6) { toast.error("كلمة المرور 6 أحرف على الأقل"); return; }
     setLoading(true);
     const { error } = await supabase.auth.signUp({
@@ -25,7 +27,7 @@ function SignupPage() {
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/dashboard`,
-        data: { full_name: fullName, phone },
+        data: { full_name: fullName.trim(), phone },
       },
     });
     setLoading(false);
