@@ -243,7 +243,7 @@ function NewBookingDialog({ cars, onAdded }: { cars: Car[]; onAdded: () => void 
           </div>
           <div>
             <Label>ملاحظات</Label>
-            <Input value={notes} onChange={(e) => setNotes(e.target.value)} />
+            <Input value={notes} onChange={(e) => setNotes(e.target.value)} maxLength={1000} />
           </div>
           <Button type="submit" variant="hero" className="w-full" disabled={busy}>
             {busy ? "جاري الحجز..." : "تأكيد الحجز"}
