@@ -205,7 +205,7 @@ function NewBookingDialog({ cars, onAdded }: { cars: Car[]; onAdded: () => void 
       scheduled_at: scheduled.toISOString(), notes: notes || null,
     });
     setBusy(false);
-    if (error) { toast.error(error.message); return; }
+    if (error) { console.error("create booking error", error); toast.error("تعذّر إنشاء الحجز"); return; }
     toast.success("تم إنشاء الحجز");
     setOpen(false); setCarId(""); setWhen(""); setNotes("");
     onAdded();
