@@ -19,7 +19,7 @@ function LoginPage() {
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
-    if (error) { toast.error("فشل الدخول: " + error.message); return; }
+    if (error) { console.error("login error", error); toast.error("فشل الدخول: تحقّق من البريد وكلمة المرور"); return; }
     toast.success("مرحباً بعودتك!");
     navigate({ to: "/dashboard" });
   }

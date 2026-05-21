@@ -29,8 +29,8 @@ function DashboardPage() {
         supabase.from("cars").select("*").eq("owner_id", user.id).order("created_at", { ascending: false }),
         supabase.from("bookings").select("*, cars(*)").eq("customer_id", user.id).order("scheduled_at", { ascending: false }),
       ]);
-      if (carsRes.error) { console.error("cars load error", carsRes.error); toast.error("تعذّر تحميل السيارات: " + carsRes.error.message); }
-      if (bookingsRes.error) { console.error("bookings load error", bookingsRes.error); toast.error("تعذّر تحميل الحجوزات: " + bookingsRes.error.message); }
+      if (carsRes.error) { console.error("cars load error", carsRes.error); toast.error("تعذّر تحميل السيارات"); }
+      if (bookingsRes.error) { console.error("bookings load error", bookingsRes.error); toast.error("تعذّر تحميل الحجوزات"); }
       setCars(carsRes.data ?? []);
       setBookings((bookingsRes.data ?? []) as Booking[]);
     })();
@@ -156,7 +156,7 @@ function AddCarDialog({ onAdded }: { onAdded: () => void }) {
       year: yearNum, color: color || null, plate_number: plate || null,
     });
     setBusy(false);
-    if (error) { toast.error(error.message); return; }
+    if (error) { console.error("add car error", error); toast.error("تعذّر إضافة السيارة"); return; }
     toast.success("تمت إضافة السيارة");
     setOpen(false); setMake(""); setModel(""); setYear(""); setColor(""); setPlate("");
     onAdded();
@@ -205,7 +205,7 @@ function NewBookingDialog({ cars, onAdded }: { cars: Car[]; onAdded: () => void 
       scheduled_at: scheduled.toISOString(), notes: notes || null,
     });
     setBusy(false);
-    if (error) { toast.error(error.message); return; }
+    if (error) { console.error("create booking error", error); toast.error("تعذّر إنشاء الحجز"); return; }
     toast.success("تم إنشاء الحجز");
     setOpen(false); setCarId(""); setWhen(""); setNotes("");
     onAdded();

@@ -31,7 +31,7 @@ function SignupPage() {
       },
     });
     setLoading(false);
-    if (error) { toast.error("فشل التسجيل: " + error.message); return; }
+    if (error) { console.error("signup error", error); toast.error("فشل التسجيل. حاول مرة أخرى أو استخدم بريداً مختلفاً"); return; }
     toast.success("تم إنشاء حسابك! جاري التوجيه...");
     navigate({ to: "/dashboard" });
   }

@@ -72,7 +72,7 @@ function StaffPage() {
 
   async function updateStatus(row: Row, newStatus: string) {
     const { error } = await supabase.from("bookings").update({ status: newStatus as never }).eq("id", row.id);
-    if (error) { toast.error(error.message); return; }
+    if (error) { console.error("update status error", error); toast.error("تعذّر تحديث الحالة"); return; }
     toast.success("تم تحديث الحالة");
     setRefresh((x) => x + 1);
   }
