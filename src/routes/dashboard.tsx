@@ -156,7 +156,7 @@ function AddCarDialog({ onAdded }: { onAdded: () => void }) {
       year: yearNum, color: color || null, plate_number: plate || null,
     });
     setBusy(false);
-    if (error) { toast.error(error.message); return; }
+    if (error) { console.error("add car error", error); toast.error("تعذّر إضافة السيارة"); return; }
     toast.success("تمت إضافة السيارة");
     setOpen(false); setMake(""); setModel(""); setYear(""); setColor(""); setPlate("");
     onAdded();
